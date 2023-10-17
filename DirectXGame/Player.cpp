@@ -8,16 +8,16 @@ void Player::Initialize(){
 }
 
 void Player::Update() {
-	if (input_->TriggerKey(DIK_LEFT)) {
+	if (input_->PushKey(DIK_LEFT) || input_->TriggerKey(DIK_A)) {
 		mapPosition_.x--;
 	}
-	if (input_->TriggerKey(DIK_RIGHT)) {
+	if (input_->PushKey(DIK_RIGHT) || input_->TriggerKey(DIK_D)) {
 		mapPosition_.x++;
 	}
-	if (input_->TriggerKey(DIK_UP)) {
+	if (input_->PushKey(DIK_UP) || input_->TriggerKey(DIK_W)) {
 		mapPosition_.y--;
 	}
-	if (input_->TriggerKey(DIK_DOWN)) {
+	if (input_->PushKey(DIK_DOWN) || input_->TriggerKey(DIK_S)) {
 		mapPosition_.y++;
 	}
 	mapPosition_.x = std::clamp(mapPosition_.x, 0, int(MapManager::GetInstance()->kMapWidth-1));

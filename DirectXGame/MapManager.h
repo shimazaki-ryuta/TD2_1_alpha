@@ -19,6 +19,8 @@ public:
 		MaskBlock,
 		ChaindBomb,
 		UnChaindBomb,
+		Indestructible,
+		MaskIndestructible,
 	};
 
 	struct Map {
@@ -66,6 +68,7 @@ private:
 	uint32_t coreTextureHandle_=0;
 	uint32_t BombTextureHandle_ = 0;
 	uint32_t unChaindTextureHandle_ = 0;
+	uint32_t IndestructibleHandle_ = 0;
 
 
 	Map map[kMapHeight][kMapWidth];

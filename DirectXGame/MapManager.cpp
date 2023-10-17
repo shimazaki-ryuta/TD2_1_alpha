@@ -18,6 +18,7 @@ void MapManager::Initialize() {
 	coreTextureHandle_ = TextureManager::Load("Core.png");
 	BombTextureHandle_ = TextureManager::Load("Bomb.png");
 	unChaindTextureHandle_ = TextureManager::Load("UnChaind.png");
+	IndestructibleHandle_ = TextureManager::Load("Indestructible.png");
 }
 
 void MapManager::Update() {
@@ -131,6 +132,9 @@ void MapManager::FindChain()
 			if (map[y][x].mapstate == MapState::ChaindBomb) {
 				map[y][x].mapstate = MapState::Bomb;
 			}
+			if (map[y][x].mapstate == MapState::MaskIndestructible) {
+				map[y][x].mapstate = MapState::Indestructible;
+			}
 		}
 	}
 	if (isFind) {
@@ -146,20 +150,27 @@ void MapManager::Protect(int x, int y) {
 	if (map[y][x].mapstate == MapState::Bomb) {
 		map[y][x].mapstate = MapState::ChaindBomb;
 	}
+	if (map[y][x].mapstate == MapState::Indestructible) {
+		map[y][x].mapstate = MapState::MaskIndestructible;
+	}
 	if (y > 0 && map[y - 1][x].mapstate == MapState::Block || 
-		y > 0 && map[y - 1][x].mapstate == MapState::Bomb) {
+		y > 0 && map[y - 1][x].mapstate == MapState::Bomb||
+	    y > 0 && map[y - 1][x].mapstate == MapState::Indestructible) {
 		Protect(x, y - 1);
 	}
 	if (y < kMapHeight - 1 && map[y + 1][x].mapstate == MapState::Block ||
-	    y < kMapHeight - 1 && map[y + 1][x].mapstate == MapState::Bomb) {
+	    y < kMapHeight - 1 && map[y + 1][x].mapstate == MapState::Bomb||
+	    y < kMapHeight - 1 && map[y + 1][x].mapstate == MapState::Indestructible) {
 		Protect(x, y + 1);
 	}
 	if (x > 0 && map[y][x - 1].mapstate == MapState::Block || 
-		x > 0 && map[y][x - 1].mapstate == MapState::Bomb) {
+		x > 0 && map[y][x - 1].mapstate == MapState::Bomb||
+	    x > 0 && map[y][x - 1].mapstate == MapState::Indestructible) {
 		Protect(x - 1, y);
 	}
 	if (x < kMapWidth - 1 && map[y][x + 1].mapstate == MapState::Block || 
-		x < kMapWidth - 1 && map[y][x + 1].mapstate == MapState::Bomb) {
+		x < kMapWidth - 1 && map[y][x + 1].mapstate == MapState::Bomb||
+	    x < kMapWidth - 1 && map[y][x + 1].mapstate == MapState::Indestructible) {
 		Protect(x + 1, y);
 	}
 }
@@ -192,6 +203,9 @@ void MapManager::Draw(const ViewProjection& viewProjecttion)
 				}
 				if (map[y][x].mapstate == MapState::UnChaindBomb) {
 					model->Draw(map[y][x].worldTransform, viewProjecttion, unChaindTextureHandle_);
+				}
+				if (map[y][x].mapstate == MapState::Indestructible) {
+					model->Draw(map[y][x].worldTransform, viewProjecttion, IndestructibleHandle_);
 				}
 			}
 		}
