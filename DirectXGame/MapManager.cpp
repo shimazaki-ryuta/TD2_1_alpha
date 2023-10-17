@@ -60,7 +60,7 @@ void MapManager::MapRead()
 				if (map[y][x].mapstate == MapState::Bomb)
 				{
 					bombs_.push_back({
-					    {y, x},
+					    {x, y},
                         0
                     });
 				}
@@ -70,6 +70,28 @@ void MapManager::MapRead()
 		y++;
 	}
 	fclose(fp);
+	for (Bomb& bomb : bombs_) {
+		bomb.chaind = 0;
+		if (bomb.position.y > 0 &&
+		    map[bomb.position.y - 1][bomb.position.x].mapstate == MapState::Block) {
+			bomb.chaind++;
+		}
+		if (bomb.position.y < kMapHeight - 1 &&
+		    map[bomb.position.y + 1][bomb.position.x].mapstate == MapState::Block) {
+			bomb.chaind++;
+		}
+		if (bomb.position.x > 0 &&
+		    map[bomb.position.y][bomb.position.x - 1].mapstate == MapState::Block) {
+			bomb.chaind++;
+		}
+		if (bomb.position.x < kMapWidth - 1 &&
+		    map[bomb.position.y][bomb.position.x + 1].mapstate == MapState::Block) {
+			bomb.chaind++;
+		}
+		if (bomb.chaind==0) {
+			map[bomb.position.y][bomb.position.x].mapstate = MapState::UnChaindBomb;
+		}
+	}
 }
 
 void MapManager::FindChain()
