@@ -50,6 +50,8 @@ public:
 	void BreakBlock(const VectorInt2& position);
 	void CreateBlock(const VectorInt2& position);
 
+	MapState GetState(const VectorInt2& positiom) { return map[positiom.y][positiom.x].mapstate; };
+
 	VectorInt2 GetPriority();
 
 	void Draw(const ViewProjection& );

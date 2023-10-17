@@ -13,6 +13,7 @@
 #include "MapManager.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Unit.h"
 
 #include <memory>
 
@@ -67,6 +68,6 @@ private: // メンバ変数
 
 	std::unique_ptr<Player> player_;
 
-	//std::unique_ptr<MapManager> map;
+	std::unique_ptr<Unit> unit_;
 
 };

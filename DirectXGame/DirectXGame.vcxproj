@@ -115,6 +115,7 @@
     <ClCompile Include="MatrixFunction.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="VectorFunction.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="MatrixFunction.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="VectorFunction.h" />
     <ClInclude Include="VectorInt.h" />
   </ItemGroup>

@@ -25,6 +25,9 @@ void GameScene::Initialize() {
 
 	player_.reset(new Player());
 	player_->Initialize();
+
+	unit_.reset(new Unit());
+	unit_->Initialize();
 }
 
 void GameScene::Update() {
@@ -36,6 +39,7 @@ if (input_->TriggerKey(DIK_0)) {
 #endif // _DEBUG
 
 	player_->Update();
+	unit_->Update();
 
 	if (isDebugCameraActive_) {
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -84,6 +88,7 @@ void GameScene::Draw() {
 
 	MapManager::GetInstance()->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
+	unit_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
