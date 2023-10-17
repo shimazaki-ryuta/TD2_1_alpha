@@ -20,8 +20,8 @@ void Player::Update() {
 	if (input_->TriggerKey(DIK_DOWN)) {
 		mapPosition_.y++;
 	}
-	mapPosition_.x = std::clamp(mapPosition_.x, 0, int(MapManager::GetInstance()->kMapWidth));
-	mapPosition_.y = std::clamp(mapPosition_.y, 0, int(MapManager::GetInstance()->kMapHeight));
+	mapPosition_.x = std::clamp(mapPosition_.x, 0, int(MapManager::GetInstance()->kMapWidth-1));
+	mapPosition_.y = std::clamp(mapPosition_.y, 0, int(MapManager::GetInstance()->kMapHeight-1));
 
 	Vector3 worldPos = MapManager::GetworldPosition(mapPosition_);
 	worldTransform_.translation_.x = worldPos.x;
