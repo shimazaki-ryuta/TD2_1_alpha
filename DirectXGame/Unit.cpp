@@ -1,6 +1,6 @@
 #include "Unit.h"
 #include <algorithm>
-
+#include "ImGuiManager.h"
 void (Unit::*Unit::phaseTable[])() = {&Unit::Next,&Unit::Move, &Unit::Create};
 
 void Unit::Initialize() {
@@ -13,7 +13,7 @@ void Unit::Initialize() {
 	mapPosition_.y = 4;
 	mapPosition_.x = std::clamp(mapPosition_.x, 0, int(MapManager::GetInstance()->kMapWidth - 1));
 	mapPosition_.y = std::clamp(mapPosition_.y, 0, int(MapManager::GetInstance()->kMapHeight - 1));
-
+	mapPosition_ = MapManager::GetInstance()->GetCorePosition();
 	Vector3 worldPos = MapManager::GetworldPosition(mapPosition_);
 	worldTransform_.translation_.x = worldPos.x;
 	worldTransform_.translation_.z = worldPos.z;
@@ -22,18 +22,34 @@ void Unit::Initialize() {
 }
 
 void Unit::Update() {
-	/*
-	mapPosition_.x = std::clamp(mapPosition_.x, 0, int(MapManager::GetInstance()->kMapWidth - 1));
-	mapPosition_.y = std::clamp(mapPosition_.y, 0, int(MapManager::GetInstance()->kMapHeight - 1));
+	if (!isLive_)
+	{
+		if (respawnCoolTime<=0)
+		{
+			isLive_ = true;
+			mapPosition_ = MapManager::GetInstance()->GetCorePosition();
+			phase_ = Phase::Next;
+			/* worldTransform_.translation_ =
+			    MapManager::GetInstance()->GetworldPosition(mapPosition_);*/
+			Vector3 worldPos = MapManager::GetworldPosition(mapPosition_);
+			worldTransform_.translation_.x = worldPos.x;
+			worldTransform_.translation_.z = worldPos.z;
+			worldTransform_.translation_.y = 2.0f;
+			worldTransform_.UpdateMatrix();
+		}
+		respawnCoolTime--;
+	} else {
+		(this->*phaseTable[static_cast<size_t>(phase_)])();
 
-	Vector3 worldPos = MapManager::GetworldPosition(mapPosition_);
-	worldTransform_.translation_.x = worldPos.x;
-	worldTransform_.translation_.z = worldPos.z;
-	worldTransform_.translation_.y = 2.0f;
+		if (MapManager::GetInstance()->GetState(mapPosition_) == MapManager::MapState::None) {
+			isLive_ = false;
+			respawnCoolTime = kRespawnTime;
+		}
+	}
 	worldTransform_.UpdateMatrix();
-	*/
-	(this->*phaseTable[static_cast<size_t>(phase_)])();
-	worldTransform_.UpdateMatrix();
+	ImGui::Begin("unit");
+	ImGui::SliderInt("cooltime",&kRespawnTime,0,1800);
+	ImGui::End();
 }
 void Unit::Next() { 
 	VectorInt2 targetBomb = MapManager::GetInstance()->GetPriority(); 
@@ -82,5 +98,7 @@ void Unit::Create()
 }
 
 void Unit::Draw(const ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection);
+	if (isLive_) {
+		model_->Draw(worldTransform_, viewProjection);
+	}
 }

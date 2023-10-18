@@ -38,4 +38,9 @@ private:
 	const int moveEnd = 60;
 	Phase phase_ = Phase::Next;
 	static void (Unit::*phaseTable[])();
+
+	//生きてるか
+	bool isLive_;
+	int respawnCoolTime = 0;
+	int kRespawnTime = 300;
 };

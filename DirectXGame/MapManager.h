@@ -52,6 +52,8 @@ public:
 
 	MapState GetState(const VectorInt2& positiom) { return map[positiom.y][positiom.x].mapstate; };
 
+	VectorInt2 GetCorePosition();
+
 	VectorInt2 GetPriority();
 
 	void Draw(const ViewProjection& );

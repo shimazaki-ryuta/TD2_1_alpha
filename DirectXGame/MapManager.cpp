@@ -252,3 +252,14 @@ VectorInt2 MapManager::GetPriority() {
 	}
 	return priolity.position;
 }
+
+VectorInt2 MapManager::GetCorePosition() {
+	for (int y = 0; y < kMapHeight; y++) {
+		for (int x = 0; x < kMapWidth; x++) {
+			if (map[y][x].mapstate == MapState::Core) {
+				return VectorInt2{x,y};
+			}
+		}
+	}
+	return {0,0};
+}
