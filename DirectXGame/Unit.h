@@ -43,4 +43,8 @@ private:
 	bool isLive_;
 	int respawnCoolTime = 0;
 	int kRespawnTime = 300;
+
+	//設置の向き
+	MapManager::Direction direction_;
+
 };

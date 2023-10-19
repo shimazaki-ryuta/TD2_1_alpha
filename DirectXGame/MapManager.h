@@ -21,8 +21,16 @@ public:
 		UnChaindBomb,
 	};
 
+	enum class Direction {
+		None,
+		Vertical,
+		Horizon,
+	};
+
 	struct Map {
 		MapState mapstate;
+		bool vertical;
+		bool horizon;
 		WorldTransform worldTransform;
 	};
 
@@ -49,6 +57,7 @@ public:
 
 	void BreakBlock(const VectorInt2& position);
 	void CreateBlock(const VectorInt2& position);
+	void CreateBlock(const VectorInt2& position,Direction direction);
 
 	MapState GetState(const VectorInt2& positiom) { return map[positiom.y][positiom.x].mapstate; };
 
@@ -65,6 +74,9 @@ private:
 	MapManager& operator=(const MapManager&) = delete;
 
 	std::unique_ptr<Model> model;
+	std::unique_ptr<Model> modelVertical_;
+	std::unique_ptr<Model> modelHorizon_;
+
 
 	uint32_t blockTextureHandle_=0;
 	uint32_t coreTextureHandle_=0;

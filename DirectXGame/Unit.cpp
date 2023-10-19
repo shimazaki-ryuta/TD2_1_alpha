@@ -60,7 +60,8 @@ void Unit::Next() {
 	targetBomb.x -= mapPosition_.x;
 	targetBomb.y -= mapPosition_.y;
 	if (std::abs(targetBomb.x) < std::abs(targetBomb.y)) {
-		targetBomb.x = 0;	
+		targetBomb.x = 0;
+		direction_ = MapManager::Direction::Vertical;
 	} else {
 		targetBomb.y = 0;
 	}
@@ -97,7 +98,7 @@ void Unit::Move() {
 
 void Unit::Create()
 {
-	MapManager::GetInstance()->CreateBlock(target_); 
+	MapManager::GetInstance()->CreateBlock(target_,direction_); 
 	phase_ = Phase::Next;
 }
 
