@@ -230,53 +230,57 @@ void MapManager::CreateBlock(const VectorInt2& position) {
 		map[position.y][position.x].mapstate = MapState::Block;
 		if (map[clampdPos.y-1][clampdPos.x].mapstate == MapState::UnChaindBomb){
 			map[clampdPos.y-1][clampdPos.x].mapstate = MapState::Bomb;
+			map[position.y][position.x].vertical = true;
 		}
 		if (map[clampdPos.y+1][clampdPos.x].mapstate == MapState::UnChaindBomb) {
 			map[clampdPos.y+1][clampdPos.x].mapstate = MapState::Bomb;
+			map[position.y][position.x].vertical = true;
 		}
 		if (map[clampdPos.y][clampdPos.x-1].mapstate == MapState::UnChaindBomb) {
 			map[clampdPos.y][clampdPos.x-1].mapstate = MapState::Bomb;
+			map[position.y][position.x].horizon = true;
 		}
 		if (map[clampdPos.y][clampdPos.x+1].mapstate == MapState::UnChaindBomb) {
-			map[clampdPos.y][clampdPos.x+1].mapstate = MapState::Bomb;
+			map[clampdPos.y][clampdPos.x + 1].mapstate = MapState::Bomb;
+			map[position.y][position.x].horizon = true;
 		}
 	}
 }
 
-void MapManager::CreateBlock(const VectorInt2& position, Direction direction) { 
-	map[position.y][position.x].vertical = false;
-	map[position.y][position.x].horizon = false;
-	if (direction == Direction::Vertical)
-	{
-		map[position.y][position.x].vertical=true;
-	} else {
-		map[position.y][position.x].horizon = true;
-	}
-	VectorInt2 clampdPos;
-	clampdPos.x = std::clamp(int(position.x), 1, int(kMapWidth - 1));
-	clampdPos.y = std::clamp(int(position.y), 1, int(kMapHeight - 1));
-
+void MapManager::CreateBlock(const VectorInt2& position, Direction direction) {
 	if (map[position.y][position.x].mapstate == MapState::None) {
-		if (map[clampdPos.y - 1][clampdPos.x].mapstate == MapState::Block) {
-			map[clampdPos.y - 1][clampdPos.x].vertical = true;
+		map[position.y][position.x].vertical = false;
+		map[position.y][position.x].horizon = false;
+		if (direction == Direction::Vertical) {
 			map[position.y][position.x].vertical = true;
-		}
-		if (map[clampdPos.y + 1][clampdPos.x].mapstate == MapState::Block) {
-			map[clampdPos.y - 1][clampdPos.x].vertical = true;
-			map[position.y][position.x].vertical = true;
-		}
-		if (map[clampdPos.y][clampdPos.x - 1].mapstate == MapState::Block) {
-			map[clampdPos.y - 1][clampdPos.x].horizon = true;
+		} else if (direction == Direction::Horizon) {
 			map[position.y][position.x].horizon = true;
 		}
-		if (map[clampdPos.y][clampdPos.x + 1].mapstate == MapState::Block) {
-			map[clampdPos.y - 1][clampdPos.x].horizon = true;
-			map[position.y][position.x].horizon = true;
-		}
-	}
-	CreateBlock(position); 
-}
+		VectorInt2 clampdPos;
+		clampdPos.x = std::clamp(int(position.x), 1, int(kMapWidth - 1));
+		clampdPos.y = std::clamp(int(position.y), 1, int(kMapHeight - 1));
 
+		if (map[position.y][position.x].mapstate == MapState::None) {
+			if (map[clampdPos.y - 1][clampdPos.x].mapstate == MapState::Block) {
+				map[clampdPos.y - 1][clampdPos.x].vertical = true;
+				map[position.y][position.x].vertical = true;
+			}
+			if (map[clampdPos.y + 1][clampdPos.x].mapstate == MapState::Block) {
+				map[clampdPos.y + 1][clampdPos.x].vertical = true;
+				map[position.y][position.x].vertical = true;
+			}
+			if (map[clampdPos.y][clampdPos.x - 1].mapstate == MapState::Block) {
+				map[clampdPos.y][clampdPos.x - 1].horizon = true;
+				map[position.y][position.x].horizon = true;
+			}
+			if (map[clampdPos.y][clampdPos.x + 1].mapstate == MapState::Block) {
+				map[clampdPos.y][clampdPos.x + 1].horizon = true;
+				map[position.y][position.x].horizon = true;
+			}
+		}
+		CreateBlock(position);
+	}
+}
 
 VectorInt2 MapManager::GetPriority() {
 	for (Bomb &bomb : bombs_){

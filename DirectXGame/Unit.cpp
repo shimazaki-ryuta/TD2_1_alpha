@@ -64,6 +64,7 @@ void Unit::Next() {
 		direction_ = MapManager::Direction::Vertical;
 	} else {
 		targetBomb.y = 0;
+		direction_ = MapManager::Direction::Horizon;
 	}
 
 	targetBomb.x = std::clamp(targetBomb.x,-1,1);
