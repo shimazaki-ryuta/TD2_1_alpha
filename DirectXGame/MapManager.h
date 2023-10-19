@@ -44,8 +44,8 @@ public:
 		int chaind;
 	};
 
-	static const uint32_t kMapWidth = 15;
-	static const uint32_t kMapHeight = 10;
+	static const uint32_t kMapWidth = 20;
+	static const uint32_t kMapHeight = 15;
 
 	const float kBlockWidth = 1.0f;
 	const float kBlockHeight = 1.0f;
