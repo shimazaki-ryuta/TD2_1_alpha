@@ -48,6 +48,12 @@ void MapManager::MapRead()
 		map[y][0].worldTransform.translation_.x = float(0)*2.0f;
 		map[y][0].worldTransform.translation_.z = -float(y)*2.0f;
 		map[y][0].worldTransform.UpdateMatrix();
+		if (map[y][0].mapstate == MapState::Bomb) {
+			bombs_.push_back({
+			    {x, 0},
+                0
+            });
+		}
 		x = 1;
 		while (ptr != NULL && x < kMapWidth) {
 			ptr = strtok_s(NULL, ",", &context);
