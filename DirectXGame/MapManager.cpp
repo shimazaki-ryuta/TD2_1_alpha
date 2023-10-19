@@ -14,7 +14,7 @@ void MapManager::Initialize() {
 	bombs_.clear();
 	MapRead(); 
 	model.reset(Model::Create());
-	blockTextureHandle_ = TextureManager::Load("white1x1.png");
+	blockTextureHandle_ = TextureManager::Load("road.png");
 	coreTextureHandle_ = TextureManager::Load("Core.png");
 	BombTextureHandle_ = TextureManager::Load("Bomb.png");
 	unChaindTextureHandle_ = TextureManager::Load("UnChaind.png");
