@@ -35,7 +35,7 @@ private:
 
 	Vector3 velocity_;
 	int frameCount_=0;
-	const int moveEnd = 60;
+	int moveEnd = 60;
 	Phase phase_ = Phase::Next;
 	static void (Unit::*phaseTable[])();
 

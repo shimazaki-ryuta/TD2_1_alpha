@@ -41,13 +41,15 @@ void Unit::Update() {
 	} else {
 		(this->*phaseTable[static_cast<size_t>(phase_)])();
 
-		if (MapManager::GetInstance()->GetState(mapPosition_) == MapManager::MapState::None) {
+		if (MapManager::GetInstance()->GetState(mapPosition_) == MapManager::MapState::None || 
+			MapManager::GetInstance()->GetState(mapPosition_) == MapManager::MapState::UnChaindBomb) {
 			isLive_ = false;
 			respawnCoolTime = kRespawnTime;
 		}
 	}
 	worldTransform_.UpdateMatrix();
 	ImGui::Begin("unit");
+	ImGui::SliderInt("move", &moveEnd, 1, 120);
 	ImGui::SliderInt("cooltime",&kRespawnTime,0,1800);
 	ImGui::End();
 }
