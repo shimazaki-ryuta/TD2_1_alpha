@@ -13,9 +13,9 @@ MapManager* MapManager::GetInstance()
 void MapManager::Initialize() {
 	bombs_.clear();
 	MapRead(); 
-	model.reset(Model::Create());
-	modelVertical_.reset(Model::Create());
-	modelHorizon_.reset(Model::Create());
+	model.reset(Model::CreateFromOBJ("RoadBase",true));
+	modelVertical_.reset(Model::CreateFromOBJ("RoadVertical",true));
+	modelHorizon_.reset(Model::CreateFromOBJ("RoadHorizon",true));
 
 	blockTextureHandle_ = TextureManager::Load("road.png");
 	coreTextureHandle_ = TextureManager::Load("Core.png");
@@ -191,13 +191,13 @@ void MapManager::Draw(const ViewProjection& viewProjecttion)
 			if (map[y][x].mapstate != MapState::None) {
 				if (map[y][x].mapstate == MapState::Block)
 				{
-					model->Draw(map[y][x].worldTransform, viewProjecttion,blockTextureHandle_);
+					model->Draw(map[y][x].worldTransform, viewProjecttion);
 					if (map[y][x].horizon) {
-						modelHorizon_->Draw(map[y][x].worldTransform, viewProjecttion, blockTextureHandle_);
+						modelHorizon_->Draw(map[y][x].worldTransform, viewProjecttion);
 					}
 					if (map[y][x].vertical) {
 						modelVertical_->Draw(
-						    map[y][x].worldTransform, viewProjecttion, blockTextureHandle_);
+						    map[y][x].worldTransform, viewProjecttion);
 					}
 				}
 				if (map[y][x].mapstate == MapState::Core) {
