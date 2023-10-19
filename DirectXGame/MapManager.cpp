@@ -14,8 +14,12 @@ void MapManager::Initialize() {
 	bombs_.clear();
 	MapRead(); 
 	model.reset(Model::CreateFromOBJ("RoadBase",true));
-	modelVertical_.reset(Model::CreateFromOBJ("RoadVertical",true));
-	modelHorizon_.reset(Model::CreateFromOBJ("RoadHorizon",true));
+	modelTop_.reset(Model::CreateFromOBJ("RoadTop", true));
+	modelDown_.reset(Model::CreateFromOBJ("RoadDown", true));
+	modelLeft_.reset(Model::CreateFromOBJ("RoadLeft", true));
+	modelRight_.reset(Model::CreateFromOBJ("RoadRight", true));
+	//modelVertical_.reset(Model::CreateFromOBJ("RoadVertical",true));
+	//modelHorizon_.reset(Model::CreateFromOBJ("RoadHorizon",true));
 
 	blockTextureHandle_ = TextureManager::Load("road.png");
 	coreTextureHandle_ = TextureManager::Load("Core.png");
@@ -192,12 +196,17 @@ void MapManager::Draw(const ViewProjection& viewProjecttion)
 				if (map[y][x].mapstate == MapState::Block)
 				{
 					model->Draw(map[y][x].worldTransform, viewProjecttion);
-					if (map[y][x].horizon) {
-						modelHorizon_->Draw(map[y][x].worldTransform, viewProjecttion);
+					if (map[y][x].top) {
+						modelTop_->Draw(map[y][x].worldTransform, viewProjecttion);
 					}
-					if (map[y][x].vertical) {
-						modelVertical_->Draw(
-						    map[y][x].worldTransform, viewProjecttion);
+					if (map[y][x].down) {
+						modelDown_->Draw(map[y][x].worldTransform, viewProjecttion);
+					}
+					if (map[y][x].left) {
+						modelLeft_->Draw(map[y][x].worldTransform, viewProjecttion);
+					}
+					if (map[y][x].right) {
+						modelRight_->Draw(map[y][x].worldTransform, viewProjecttion);
 					}
 				}
 				if (map[y][x].mapstate == MapState::Core) {
@@ -217,6 +226,17 @@ void MapManager::Draw(const ViewProjection& viewProjecttion)
 void MapManager::BreakBlock(const VectorInt2& position) {
 	if (map[position.y][position.x].mapstate == MapState::Block) {
 		map[position.y][position.x].mapstate = MapState::None;
+
+		VectorInt2 clampdPos;
+		clampdPos.x = std::clamp(int(position.x), 1, int(kMapWidth - 1));
+		clampdPos.y = std::clamp(int(position.y), 1, int(kMapHeight - 1));
+
+
+		map[clampdPos.y - 1][clampdPos.x].down = false;
+		map[clampdPos.y + 1][clampdPos.x].top = false;
+		map[clampdPos.y][clampdPos.x - 1].right = false;
+		map[clampdPos.y][clampdPos.x + 1].left = false;
+	
 		FindChain();
 	}
 }
@@ -230,54 +250,66 @@ void MapManager::CreateBlock(const VectorInt2& position) {
 		map[position.y][position.x].mapstate = MapState::Block;
 		if (map[clampdPos.y-1][clampdPos.x].mapstate == MapState::UnChaindBomb){
 			map[clampdPos.y-1][clampdPos.x].mapstate = MapState::Bomb;
-			map[position.y][position.x].vertical = true;
+			map[position.y][position.x].top = true;
 		}
 		if (map[clampdPos.y+1][clampdPos.x].mapstate == MapState::UnChaindBomb) {
 			map[clampdPos.y+1][clampdPos.x].mapstate = MapState::Bomb;
-			map[position.y][position.x].vertical = true;
+			map[position.y][position.x].down = true;
 		}
 		if (map[clampdPos.y][clampdPos.x-1].mapstate == MapState::UnChaindBomb) {
 			map[clampdPos.y][clampdPos.x-1].mapstate = MapState::Bomb;
-			map[position.y][position.x].horizon = true;
+			map[position.y][position.x].right = true;
 		}
 		if (map[clampdPos.y][clampdPos.x+1].mapstate == MapState::UnChaindBomb) {
 			map[clampdPos.y][clampdPos.x + 1].mapstate = MapState::Bomb;
-			map[position.y][position.x].horizon = true;
+			map[position.y][position.x].left = true;
 		}
 	}
 }
 
 void MapManager::CreateBlock(const VectorInt2& position, Direction direction) {
 	if (map[position.y][position.x].mapstate == MapState::None) {
-		map[position.y][position.x].vertical = false;
-		map[position.y][position.x].horizon = false;
-		if (direction == Direction::Vertical) {
-			map[position.y][position.x].vertical = true;
-		} else if (direction == Direction::Horizon) {
-			map[position.y][position.x].horizon = true;
+		map[position.y][position.x].top = false;
+		map[position.y][position.x].down = false;
+		map[position.y][position.x].left = false;
+		map[position.y][position.x].right = false;
+
+		if (direction == Direction::Top) {
+			map[position.y][position.x].down = true;
+		} else if (direction == Direction::Down) {
+			map[position.y][position.x].top = true;
+		} else if (direction == Direction::Left) {
+			map[position.y][position.x].right = true;
+		} else if (direction == Direction::Right) {
+			map[position.y][position.x].left = true;
 		}
 		VectorInt2 clampdPos;
 		clampdPos.x = std::clamp(int(position.x), 1, int(kMapWidth - 1));
 		clampdPos.y = std::clamp(int(position.y), 1, int(kMapHeight - 1));
-
+		
 		if (map[position.y][position.x].mapstate == MapState::None) {
-			if (map[clampdPos.y - 1][clampdPos.x].mapstate == MapState::Block) {
-				map[clampdPos.y - 1][clampdPos.x].vertical = true;
-				map[position.y][position.x].vertical = true;
+			if (map[clampdPos.y - 1][clampdPos.x].mapstate == MapState::Block || 
+				map[clampdPos.y - 1][clampdPos.x].mapstate == MapState::Core) {
+				map[clampdPos.y - 1][clampdPos.x].down = true;
+				map[position.y][position.x].top = true;
 			}
-			if (map[clampdPos.y + 1][clampdPos.x].mapstate == MapState::Block) {
-				map[clampdPos.y + 1][clampdPos.x].vertical = true;
-				map[position.y][position.x].vertical = true;
+			if (map[clampdPos.y + 1][clampdPos.x].mapstate == MapState::Block || 
+				map[clampdPos.y + 1][clampdPos.x].mapstate == MapState::Core) {
+				map[clampdPos.y + 1][clampdPos.x].top = true;
+				map[position.y][position.x].down = true;
 			}
-			if (map[clampdPos.y][clampdPos.x - 1].mapstate == MapState::Block) {
-				map[clampdPos.y][clampdPos.x - 1].horizon = true;
-				map[position.y][position.x].horizon = true;
+			if (map[clampdPos.y][clampdPos.x - 1].mapstate == MapState::Block || 
+				map[clampdPos.y][clampdPos.x - 1].mapstate == MapState::Core) {
+				map[clampdPos.y][clampdPos.x - 1].right = true;
+				map[position.y][position.x].left = true;
 			}
-			if (map[clampdPos.y][clampdPos.x + 1].mapstate == MapState::Block) {
-				map[clampdPos.y][clampdPos.x + 1].horizon = true;
-				map[position.y][position.x].horizon = true;
+			if (map[clampdPos.y][clampdPos.x + 1].mapstate == MapState::Block || 
+				map[clampdPos.y][clampdPos.x + 1].mapstate == MapState::Core) {
+				map[clampdPos.y][clampdPos.x + 1].left = true;
+				map[position.y][position.x].right = true;
 			}
 		}
+		
 		CreateBlock(position);
 	}
 }

@@ -61,10 +61,18 @@ void Unit::Next() {
 	targetBomb.y -= mapPosition_.y;
 	if (std::abs(targetBomb.x) < std::abs(targetBomb.y)) {
 		targetBomb.x = 0;
-		direction_ = MapManager::Direction::Vertical;
+		//direction_ = MapManager::Direction::Vertical;
+		direction_ = MapManager::Direction::Top;
+		if (targetBomb.y > 0) {
+			direction_ = MapManager::Direction::Down;
+		}
 	} else {
 		targetBomb.y = 0;
-		direction_ = MapManager::Direction::Horizon;
+		direction_ = MapManager::Direction::Left;
+		if (targetBomb.x > 0) {
+			direction_ = MapManager::Direction::Right;
+		}
+		
 	}
 
 	targetBomb.x = std::clamp(targetBomb.x,-1,1);

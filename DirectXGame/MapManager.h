@@ -23,14 +23,19 @@ public:
 
 	enum class Direction {
 		None,
-		Vertical,
-		Horizon,
+		Top,
+		Down,
+		Left,
+		Right,
+		//Horizon,
 	};
 
 	struct Map {
 		MapState mapstate;
-		bool vertical;
-		bool horizon;
+		bool top;
+		bool down;
+		bool left;
+		bool right;
 		WorldTransform worldTransform;
 	};
 
@@ -74,8 +79,12 @@ private:
 	MapManager& operator=(const MapManager&) = delete;
 
 	std::unique_ptr<Model> model;
-	std::unique_ptr<Model> modelVertical_;
-	std::unique_ptr<Model> modelHorizon_;
+	std::unique_ptr<Model> modelTop_;
+	std::unique_ptr<Model> modelDown_;
+	std::unique_ptr<Model> modelLeft_;
+	std::unique_ptr<Model> modelRight_;
+	//std::unique_ptr<Model> modelVertical_;
+	//std::unique_ptr<Model> modelHorizon_;
 
 
 	uint32_t blockTextureHandle_=0;
