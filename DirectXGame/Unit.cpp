@@ -48,10 +48,12 @@ void Unit::Update() {
 		}
 	}
 	worldTransform_.UpdateMatrix();
+#ifdef _DEBUG
 	ImGui::Begin("unit");
 	ImGui::SliderInt("move", &moveEnd, 1, 120);
-	ImGui::SliderInt("cooltime",&kRespawnTime,0,1800);
+	ImGui::SliderInt("cooltime", &kRespawnTime, 0, 1800);
 	ImGui::End();
+#endif
 }
 void Unit::Next() { 
 	VectorInt2 targetBomb = MapManager::GetInstance()->GetPriority(); 
